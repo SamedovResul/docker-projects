@@ -1,0 +1,37 @@
+version: "3.9"
+services:
+  node:
+    image: node
+    build:
+      context: .
+      dockerfile: Dockerfile
+    init: true
+    volumes:
+      - type: bind
+        source: ./src/
+        target: /usr/src/app/
+      - type: volume 
+        target: /usr/src/app/node_modules 
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgres://postgres:foobarbaz@db:5432/postgres
+    networks:
+      - backend
+    ports:
+      - 3000:3000
+    restart: unless-stopped  
+  db:
+    image: postgres:15.1-alpine
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=foobarbaz
+    networks:
+      - backend
+    ports: 
+      - 5432:5432
+volumes:
+  pgdata:
+networks:
+  backend:
