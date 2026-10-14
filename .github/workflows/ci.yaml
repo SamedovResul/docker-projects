@@ -22,3 +22,7 @@ jobs:
       - name: install dependencies
         working-directory: src
         run: npm ci
+
+      - name: Run tests
+        working-directory: src
+        run: npm test
