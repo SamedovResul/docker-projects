@@ -29,3 +29,21 @@ jobs:
       
       - name: Build Docker image
         run: docker build --tag api-node:test --file Dockerfile .
+
+      - name: Start app container
+        run: docker run -detach --name api-under-test --publish 3000:3000 api-node:test
+      
+      - name: Check app responds
+        run: | 
+          for attempt in {1..10}; do
+            if curl --fail --silent  http://localhost:3000/; then
+              exit 0
+            fi
+            sleep 2
+          done
+          docker logs api-under-test
+          exit 1
+
+      - name: Clean up app container
+        if: always()
+        run: docker rm --force api-under-test || true
