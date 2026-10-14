@@ -26,3 +26,6 @@ jobs:
       - name: Run tests
         working-directory: src
         run: npm test
+      
+      - name: Build Docker image
+        run: docker build --tag api-node:test --file Dockerfile .
