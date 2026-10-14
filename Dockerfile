@@ -18,6 +18,8 @@ COPY --from=build /usr/src/app/package*.json ./
 
 COPY --from=build /usr/src/app/index.js ./
 
+COPY --from=build /usr/src/app/node_modules ./node_modules
+
 RUN addgroup -S app && adduser -S app -G app
 
 USER app
