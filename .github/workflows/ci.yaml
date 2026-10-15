@@ -50,3 +50,10 @@ jobs:
       - name: Clean up app container
         if: always()
         run: docker rm --force api-under-test || true
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with: 
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{secrets.GHCR_PAT}}           
