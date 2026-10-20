@@ -56,4 +56,24 @@ jobs:
         with: 
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{secrets.GHCR_PAT}}           
+          password: ${{secrets.GHCR_PAT}}      
+
+      - name: Tag and push images
+        run: | 
+          OWNER=$(echo "$GITHUB_REPOSITORY_OWNER" | tr '[:upper:]' '[:lower:]')
+          VERSION=$(node -p "require('./src/package.json').version")
+          IMAGE="ghcr.io/${OWNER}/api-node"
+
+          docker tag api-node:test "${IMAGE}:${GITHUB_SHA}"
+          docker tag api-node:test "${IMAGE}:${VERSION}"
+
+          docker push "${IMAGE}:${GITHUB_SHA}"
+          docker push "${IMAGE}:${VERSION}"
+
+      - name: Scan image for critical vulnerabilities
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: api-node:test
+          format: table
+          exit-code: '1'
+          severity: CRITICAL
