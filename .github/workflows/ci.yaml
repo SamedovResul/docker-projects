@@ -31,7 +31,7 @@ jobs:
         run: npm test
       
       - name: Build Docker image
-        run: docker build --tag api-node:test --file Dockerfile .
+        run: docker build --pull --tag api-node:test --file Dockerfile .
 
       - name: Start app container
         run: docker run -detach --name api-under-test --publish 3000:3000 api-node:test
