@@ -1,4 +1,4 @@
-FROM node:19.6-bullseye-slim AS build
+FROM node:24-bookworm-slim AS build
 
 WORKDIR /usr/src/app
 
@@ -10,7 +10,7 @@ RUN --mount=type=cache,target=/usr/src/app/.npm \
 
 COPY ./src/ ./
 
-FROM node:20-alpine AS runtime
+FROM node:24-alpine AS runtime
 
 WORKDIR /usr/src/app
 
@@ -19,6 +19,8 @@ COPY --from=build /usr/src/app/package*.json ./
 COPY --from=build /usr/src/app/index.js ./
 
 COPY --from=build /usr/src/app/node_modules ./node_modules
+
+RUN npm install --global npm@latest
 
 RUN addgroup -S app && adduser -S app -G app
 
